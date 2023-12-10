@@ -1,6 +1,50 @@
 import marshmallow as ma
 from marshmallow import Schema, fields
 
+from datetime import datetime
+from enum import Enum
+from typing import List, Optional
+from uuid import UUID
+
+# from pydantic import BaseModel, Extra, conint, conlist, validator
+
+
+class Size(Enum):
+    child = 'child'
+    junior = 'junior'
+    adult_small = 'small'
+    adult_medium = 'medium'
+    adult_large = 'large'
+
+
+class User(Enum):
+    male = 'male'
+    female = 'female'
+
+# vuokrauksen ja huollon tilavaihtoehdot
+class Status(Enum):
+    created = 'created' # vuokraus/huoltotilaus
+    reserved = 'reserved' # vuokraus
+    paid = 'paid' # vuokraus
+    delivered = 'delivered' # vuokraus
+    cancelled = 'cancelled' # vuokraus
+    returned = 'returned' # vuokraus
+    delayed = 'delayed' # vuokraus
+    pending = 'pending' # huolto
+    in_progress = 'in_progress' # huolto
+    ready = 'ready' # huolto
+
+class BikeStatus(Enum):
+    available = 'available'
+    reserved = 'reserved'
+    under_maintenance = 'under_maintenance'
+    removed = 'removed'
+
+
+
+
+
+
 class BikeSchema(ma.Schema):
     id = fields.Int(dump_only = True)
     brand = fields.Str(required = True)
