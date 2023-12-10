@@ -1,9 +1,3 @@
-class Bike:
-    def __init__(self, id, brand, status ='available'):
-        self.id = id
-        self.brand = brand
-
-
 import uuid
 from datetime import datetime
 
@@ -17,99 +11,89 @@ Base = declarative_base()
 def generate_uuid():
     return str(uuid.uuid4())
 
-
-#vuokrattavat tuotteet
-class ItemModel(Base):
-    __tablename__ = 'item'
+# pyörät
+class Bike(Base):
+    __tablename__ = 'bike'
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    #order_id = Column(Integer, ForeignKey('order.id'))
-    product = Column(String, nullable=False)
+    brand = Column(String, nullable=False)
     size = Column(String, nullable=False)
-    quantity = Column(Integer, nullable=False)
+    user = Column(String, nullable=False) #male/female
+    status = Column(String, nullable=False, default='available')
 
     def dict(self):
         return {
             'id': self.id,
-            'product': self.product,
+            'brand': self.brand,
             'size': self.size,
-            'quantity': self.quantity
+            'user': self.user,
+            'status': self.status
         }
+
 
 #asiakkaat
-class ItemModel(Base):
-    __tablename__ = 'item'
+class Customer(Base):
+    __tablename__ = 'customer'
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    #order_id = Column(Integer, ForeignKey('order.id'))
-    product = Column(String, nullable=False)
-    size = Column(String, nullable=False)
-    quantity = Column(Integer, nullable=False)
+    name = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    address = Column(String, nullable=False)
 
     def dict(self):
         return {
             'id': self.id,
-            'product': self.product,
-            'size': self.size,
-            'quantity': self.quantity
+            'name': self.name,
+            'phone': self.phone,
+            'email': self.email,
+            'address': self.address
         }
 
 
-#vuokratut kohteet
-class RentalModel(Base):
+#vuokraus
+class Rental(Base):
     __tablename__ = 'rental'
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    items = relationship('ItemModel', backref='rental')
+    bike_id = Column(String, ForeignKey('bike.id'))
+    customer_id = Column(String, ForeignKey('customer.id'))
     status = Column(String, nullable=False, default='created')
     created = Column(DateTime, default=datetime.utcnow)
-    schedule_id = Column(String)
     delivery_id = Column(String)
 
     def dict(self):
         return {
             'id': self.id,
-            'items': [item.dict() for item in self.items],
+            'bike_id': self.bike_id,
+            'customer_id': self.customer_id,
             'status': self.status,
             'created': self.created,
-            'schedule_id': self.schedule_id,
             'delivery_id': self.delivery_id,
         }
 
-class MaintenanceModel(Base):
+#huolto
+class Maintenance(Base):
     __tablename__ = 'maintenance'
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    # items = relationship('ItemModel', backref='rental')
+    bike_id = Column(String, ForeignKey('bike.id'))
     status = Column(String, nullable=False, default='created')
     created = Column(DateTime, default=datetime.utcnow)
-    schedule_id = Column(String)
-    delivery_id = Column(String)
+    
 
     def dict(self):
         return {
             'id': self.id,
-            #'items': [item.dict() for item in self.items],
+            'bike_id': self.bike_id,
             'status': self.status,
             'created': self.created,
-            'schedule_id': self.schedule_id,
-            'delivery_id': self.delivery_id,
         }
 
-#vuokrattavat tuotteet
-class ItemModel(Base):
-    __tablename__ = 'item'
+   
+    
 
-    id = Column(String, primary_key=True, default=generate_uuid)
-    order_id = Column(Integer, ForeignKey('order.id'))
-    product = Column(String, nullable=False)
-    size = Column(String, nullable=False)
-    quantity = Column(Integer, nullable=False)
 
-    def dict(self):
-        return {
-            'id': self.id,
-            'product': self.product,
-            'size': self.size,
-            'quantity': self.quantity
-        }
+
+
+
