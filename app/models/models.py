@@ -19,7 +19,7 @@ class Bike(Base):
     brand = Column(String, nullable=False)
     size = Column(String, nullable=False)
     user = Column(String, nullable=False) #male/female
-    status = Column(String, nullable=False, default='available')
+    bike_status = Column(String, nullable=False, default='available')
 
     def dict(self):
         return {
@@ -27,7 +27,7 @@ class Bike(Base):
             'brand': self.brand,
             'size': self.size,
             'user': self.user,
-            'status': self.status
+            'bike_status': self.bike_status
         }
 
 
