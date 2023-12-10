@@ -1,0 +1,4 @@
+Flask==2.0.1
+Flask-SQLAlchemy==3.0.0
+Flask-Smorest==0.33.0
+Marshmallow==3.13.0
