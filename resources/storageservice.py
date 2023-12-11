@@ -2,10 +2,9 @@ import uuid
 from flask import request, jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from flask_sqlalchemy import SQLAlchemy
-from models.models import Bike
-from sqlalchemy.orm import sessionmaker
-#from app import db, Session
+from models.models import Bike, Base
+import app
+
 
 blp = Blueprint("Items", __name__, description="Operations on items")
 
@@ -25,18 +24,36 @@ items = {
             ]
         }
 
+bike = Bike()
+@blp.route('/add_bike', methods=['POST'])
+@blp.response(201, bike.dict())
+class AddItem(MethodView):
+    def __init__(self):
+        #from app import Session as session
+        self.bike = Bike()
+        self.session = app.Session()
+    def add_bike(self, body):
+        new_bike = Bike(**body)
+
+        # Add the bike to the database
+        self.session.add(new_bike)
+        self.session.commit()
+
+        return new_bike.dict(), 201
+
+
 @blp.route("/item/<string:bike_id>")
 class Item(MethodView):
     def __init__(self):
+        #from app import Session
         self.bike = Bike()
-        self.session = None # Session()
+        self.session = app.Session()
 
     def get(self, bike_id):
         """Get bike details"""
-        
         try:
             #bike = Bike.query.get(bike_id)
-            #bike = self.session.query(Bike).filter_by(id=bike_id).first()
+            bike = self.session.query(Bike).filter_by(id=bike_id).first()
             #print(bike)
 
             if self.bike.id == bike_id:
@@ -45,6 +62,7 @@ class Item(MethodView):
                 abort(404, message="Bike not found")
         except KeyError:
             abort(404, message="Bike not found")
+
 
 #     # def get(self, item_id):
 #     #     try:

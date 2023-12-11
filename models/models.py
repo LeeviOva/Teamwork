@@ -1,13 +1,10 @@
 import uuid
 from datetime import datetime
-
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-#from app import db, Session
 
 Base = declarative_base()
-
 
 def generate_uuid():
     return str(uuid.uuid4())
