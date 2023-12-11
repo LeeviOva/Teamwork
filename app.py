@@ -2,12 +2,14 @@ from sqlalchemy.orm import sessionmaker
 from flask import Flask
 from flask_smorest import Api
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
 from config import BaseConfig
 import uuid
 from flask import request, jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from models.models import Bike
+from models.models import Bike, Base
 
 app = Flask(__name__)
 
@@ -15,11 +17,10 @@ app.config.from_object(BaseConfig)
 
 api = Api(app)
 db = SQLAlchemy(app)
-
-
+engine = create_engine('sqlite:///bikedb.sqlite')
+Base.metadata.create_all(engine)
 
 storage_blueprint = Blueprint("Items", __name__, description="Operations on items")
-
 
 items = {
             "items": [
@@ -59,10 +60,10 @@ class AddBikeToStorage(MethodView):
 
 @storage_blueprint.route("/item/<string:bike_id>")
 class BikeInStorage(MethodView):
-    def __init__(self, session):
+    def __init__(self):
         #from app import Session
         self.bike = Bike()
-        self.session = session
+        self.session = Session()
 
     def get(self, bike_id):
         """Get bike details"""
@@ -82,6 +83,6 @@ api.register_blueprint(storage_blueprint)
 
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()
         Session = sessionmaker(bind=db.engine)
+        db.create_all()
     app.run(debug=True)
