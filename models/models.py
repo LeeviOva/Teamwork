@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
+
 Base = declarative_base()
 
 def generate_uuid():
@@ -27,6 +28,9 @@ class Bike(Base):
             'user': self.user,
             'bike_status': self.bike_status
         }
+    
+    def __str__(self):
+        return f"{self.id} {self.brand} {self.size} {self.user} {self.bike_status}"
 
 
 #asiakkaat
@@ -58,7 +62,6 @@ class Rental(Base):
     customer_id = Column(String, ForeignKey('customer.id'))
     status = Column(String, nullable=False, default='created')
     created = Column(DateTime, default=datetime.utcnow)
-    delivery_id = Column(String)
 
     def dict(self):
         return {
@@ -66,8 +69,7 @@ class Rental(Base):
             'bike_id': self.bike_id,
             'customer_id': self.customer_id,
             'status': self.status,
-            'created': self.created,
-            'delivery_id': self.delivery_id,
+            'created': self.created
         }
 
 #huolto

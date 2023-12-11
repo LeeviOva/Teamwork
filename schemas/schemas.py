@@ -1,5 +1,5 @@
 import marshmallow as ma
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 from datetime import datetime
 from enum import Enum
@@ -40,15 +40,30 @@ class BikeStatus(Enum):
     under_maintenance = 'under_maintenance'
     removed = 'removed'
 
+# class BikeSchema(ma.Schema):
+#     id = fields.Int(dump_only = True)
+#     brand = fields.Str(required = True)
+#     status = fields.Str(dump_only = True)
 
-
-
-
+class BikeQuerySchema(ma.Schema):
+    name = ma.fields.String()
 
 class BikeSchema(ma.Schema):
-    id = fields.Int(dump_only = True)
-    brand = fields.Str(required = True)
-    status = fields.Str(dump_only = True)
+    id = fields.UUID(required=True)
+    brand = fields.String(required=True)
+    size = fields.String(
+        required=True,
+        validate=validate.OneOf(["child", "junior","small", "medium", "large"]),
+    )
+    user = fields.String(
+        required=True,
+        validate=validate.OneOf(["male", "female"]),
+    )
 
+    bike_status = fields.String(
+        required=True,
+        validate=validate.OneOf(["available", "reserved", "under_maintenance", "removed"]),
+    )
+    
 class BikeQuerySchema(ma.Schema):
     name = ma.fields.String()
